@@ -65,29 +65,29 @@ async function iniciarBot() {
   try {
     console.log('[BOT] Iniciando Aviator Monitor com Stealth...');
 
-    browser = await puppeteer.launch({
-      headless: 'new',
-      executablePath: '/usr/bin/chromium',
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu',
-        '--disable-software-rasterizer',
-        '--disable-extensions',
-        '--disable-infobars',
-        '--disable-features=site-per-process',
-        '--disable-background-timer-throttling',
-        '--disable-backgrounding-occluded-windows',
-        '--disable-renderer-backgrounding',
-        '--window-size=1280,800',
-        '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
-        '--disable-web-security',  // opcional se precisar
-        '--no-zygote'  // ajuda em containers slim
-      ],
-      ignoreHTTPSErrors: true,
-      dumpio: true,  // loga erros do Chromium direto nos logs do Render
-    });
+browser = await puppeteer.launch({
+  headless: 'new',
+  executablePath: '/usr/bin/chromium-browser',
+  args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    '--disable-gpu',
+    '--disable-software-rasterizer',
+    '--disable-extensions',
+    '--disable-infobars',
+    '--disable-features=site-per-process',
+    '--disable-background-timer-throttling',
+    '--disable-backgrounding-occluded-windows',
+    '--disable-renderer-backgrounding',
+    '--window-size=1280,800',
+    '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+    '--disable-web-security',
+    '--no-zygote'
+  ],
+  ignoreHTTPSErrors: true,
+  dumpio: true,
+});
 
     page = await browser.newPage();
 
@@ -196,3 +196,4 @@ process.on('SIGTERM', async () => {
   if (browser) await browser.close();
   process.exit(0);
 });
+
