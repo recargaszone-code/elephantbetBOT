@@ -19,4 +19,5 @@ RUN npm install --production
 COPY . .
 
 # Roda o bot
-CMD ["npm", "start"]
+
+CMD ["xvfb-run", "--auto-servernum", "--server-args='-screen 0 1280x800x24'", "npm", "start"]
