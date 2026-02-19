@@ -1,7 +1,7 @@
 // ========================================================
-// Aviator Monitor Bot - Versão Final Limpa e Organizada
+// Aviator Monitor Bot - Versão Final 24/7 Render Ready
 // Captura SÓ histórico real da .payouts-block
-// Login automático + Telegram alertas + Logs simples e claros
+// Login automático + Telegram + Flags anti-crash no Docker
 // ========================================================
 
 const puppeteer = require('puppeteer-extra');
@@ -66,15 +66,27 @@ async function iniciarBot() {
     console.log('[BOT] Iniciando Aviator Monitor com Stealth...');
 
     browser = await puppeteer.launch({
-      headless: false,  // Mude pra true quando quiser rodar sem janela
+      headless: 'new',
+      executablePath: '/usr/bin/chromium',
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
         '--disable-gpu',
+        '--disable-software-rasterizer',
+        '--disable-extensions',
+        '--disable-infobars',
+        '--disable-features=site-per-process',
+        '--disable-background-timer-throttling',
+        '--disable-backgrounding-occluded-windows',
+        '--disable-renderer-backgrounding',
         '--window-size=1280,800',
-        '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
+        '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
+        '--disable-web-security',  // opcional se precisar
+        '--no-zygote'  // ajuda em containers slim
       ],
+      ignoreHTTPSErrors: true,
+      dumpio: true,  // loga erros do Chromium direto nos logs do Render
     });
 
     page = await browser.newPage();
@@ -114,7 +126,6 @@ async function iniciarBot() {
         frame = await getIframeFrame();
         if (!frame) return;
 
-        // Selector exato: só os .payout dentro da .payouts-block
         const payouts = await frame.$$eval(
           '.payouts-block .payout.ng-star-inserted',
           els => els.map(el => el.innerText.trim()).filter(t => t && t.endsWith('x'))
