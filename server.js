@@ -84,15 +84,16 @@ browser = await puppeteer.launch({
     '--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36',
     '--disable-web-security',
     '--no-zygote',
-    '--disable-notifications',               // Desabilita push/notifications (mata GCM registration)
-    '--disable-features=TranslateUI,BlinkGenPropertyTrees', // evita features que precisam GCM
-    '--no-first-run',                        // Evita first run dialogs
-    '--disable-sync',                        // Desabilita sync (GCM related)
-    '--disable-component-update'             // Evita update checks que falham
+    '--disable-notifications',               // Bloqueia notificações (mata GCM)
+    '--disable-push-api',                    // Desabilita Push API
+    '--disable-features=PushMessaging',      // Desabilita feature GCM/FCM
+    '--disable-component-update',            // Evita updates que chamam GCM
+    '--no-first-run',                        // Evita first run que tenta register
+    '--disable-sync'                         // Desabilita sync (GCM related)
   ],
   ignoreHTTPSErrors: true,
-  dumpio: true,  // Continua logando detalhes do Chromium
-  pipe: true     // Usa pipe pra comunicação mais estável em containers
+  dumpio: true,
+  pipe: true
 });
 
     page = await browser.newPage();
@@ -202,5 +203,6 @@ process.on('SIGTERM', async () => {
   if (browser) await browser.close();
   process.exit(0);
 });
+
 
 
